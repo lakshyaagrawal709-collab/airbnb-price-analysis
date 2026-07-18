@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb Dynamic Pricing Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background-color: #1a365d;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        select {
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+            cursor: pointer;
+        }
+        .metrics-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        .metric-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 30%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-top: 4px solid #2ca02c;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2ca02c;
+            margin: 10px 0;
+        }
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            width: 45%;
+            min-width: 350px;
+        }
+        .card img {
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 style="margin: 0;">Airbnb Dynamic Pricing Interface</h1>
+        <p style="margin-top: 10px; opacity: 0.9;">Project Submitted by: Lakshay Agrawal</p>
+    </header>
+
+    <!-- Interactive Filter -->
+    <div class="controls">
+        <label for="regionFilter" style="font-weight: bold; margin-right: 10px;">Filter Market Data by Region:</label>
+        <select id="regionFilter" onchange="updateDashboard()">
+            <option value="all">All Singapore Regions</option>
+            <option value="central">Central Region</option>
+            <option value="west">West Region</option>
+            <option value="east">East Region</option>
+        </select>
+    </div>
+
+    <!-- Dynamic Metrics -->
+    <div class="metrics-container">
+        <div class="metric-box">
+            <h3>Active Listings</h3>
+            <div class="metric-value" id="listingsCount">7,907</div>
+        </div>
+        <div class="metric-box">
+            <h3>Average Nightly Rate</h3>
+            <div class="metric-value" id="avgPrice">$169.33</div>
+        </div>
+        <div class="metric-box">
+            <h3>Baseline Model RMSE</h3>
+            <div class="metric-value" id="modelError">$221.35</div>
+        </div>
+    </div>
+
+    <!-- Visualizations -->
+    <div class="dashboard-container">
+        <div class="card">
+            <h2>Hyper-Local Market Analysis</h2>
+            <p style="color: #666;">Comparing average listing prices across major geographical zones.</p>
+            <img src="image1.png" alt="Average Price by Region">
+        </div>
+
+        <div class="card">
+            <h2>Pricing Correlation Heatmap</h2>
+            <p style="color: #666;">Identifying numerical patterns between review volume, availability, and pricing.</p>
+            <img src="image2.png" alt="Correlation Heatmap">
+        </div>
+    </div>
+
+    <!-- JavaScript Logic to make the dashboard interactive -->
+    <script>
+        function updateDashboard() {
+            let filter = document.getElementById("regionFilter").value;
+            let listings = document.getElementById("listingsCount");
+            let price = document.getElementById("avgPrice");
+
+            // Simple logic to change numbers based on dropdown selection
+            if (filter === "central") {
+                listings.innerText = "3,425";
+                price.innerText = "$176.62";
+            } else if (filter === "west") {
+                listings.innerText = "540";
+                price.innerText = "$175.97";
+            } else if (filter === "east") {
+                listings.innerText = "508";
+                price.innerText = "$142.50";
+            } else {
+                listings.innerText = "7,907";
+                price.innerText = "$169.33";
+            }
+        }
+    </script>
+
+</body>
+</html>
