@@ -27,3 +27,5 @@
 
 ## 7. Conclusions
 **What I learned:** I learned that while machine learning is powerful, raw data is often messy. In the future, I would improve this project by removing extreme pricing outliers (like $10,000/night luxury homes) to make the core model even more accurate.
+
+
