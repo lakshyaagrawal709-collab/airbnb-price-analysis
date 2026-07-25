@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb Dynamic Pricing Dashboard</title>
+    <style>
+        /* Base Variables */
+        :root {
+            --brand-color: #FF5A5F; 
+            --dark-text: #484848;
+            --light-bg: #F7F9FA;
+            --white: #FFFFFF;
+            --accent-blue: #00A699;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --border-color: #eee;
+        }
+
+        /* Dark Mode Variables */
+        body.dark-mode {
+            --dark-text: #E0E0E0;
+            --light-bg: #121212;
+            --white: #1E1E1E;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            margin: 0;
+            padding: 20px 40px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header Styling */
+        header {
+            background: linear-gradient(135deg, var(--brand-color), #ff7e82);
+            color: #FFFFFF;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255, 90, 95, 0.3);
+            position: relative;
+        }
+        
+        header h1 { margin: 0; font-size: 2.5em; letter-spacing: 1px; }
+        header p { margin-top: 10px; font-size: 1.1em; opacity: 0.95; font-weight: 500;}
+
+        /* Dark Mode Button */
+        .theme-toggle {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .theme-toggle:hover { background: white; color: var(--brand-color); }
+
+        /* Filter Controls */
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+
+        select {
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            outline: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: border-color 0.3s;
+        }
+        select:focus { border-color: var(--brand-color); }
+
+        /* Metrics Row */
+        .metrics-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .metric-box {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            box-shadow: var(--card-shadow);
+            border-top: 5px solid var(--accent-blue);
+            transition: transform 0.3s ease;
+        }
+        .metric-box:hover { transform: translateY(-5px); }
+        .metric-box h3 { margin: 0; font-size: 0.9em; color: #888; text-transform: uppercase; }
+        .metric-value { font-size: 2.2em; font-weight: bold; margin-top: 15px; }
+
+        /* Insights Section */
+        .insights-section {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 6px solid var(--brand-color);
+            margin-bottom: 40px;
+            box-shadow: var(--card-shadow);
+        }
+        .insights-section h2 { margin-top: 0; color: var(--brand-color); }
+        .insights-section ul { line-height: 1.8; font-size: 1.1em; }
+
+        /* Charts & Visualizations Grid */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card h2 { margin-top: 0; color: var(--accent-blue); }
+        .card img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 15px; }
+
+        /* Data Table Section */
+        .table-section {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background-color: var(--light-bg); font-weight: bold; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Dark Mode</button>
+        <h1>Airbnb Dynamic Pricing Interface</h1>
+        <p>Lakshay Agrawal | Roll No: N243 | SAP: 70472400266</p>
+        <p style="font-size: 0.9em; margin-top: 5px;">MBA Tech Computer Engineering - NMIMS Shirpur</p>
+    </header>
+
+    <!-- Executive Summary / Insights -->
+    <div class="insights-section">
+        <h2>Key Market Insights</h2>
+        <ul>
+            <li><strong>High Demand Zones:</strong> The Central Region maintains the highest average nightly rate ($176.62) due to proximity to tourist hotspots.</li>
+            <li><strong>Property Type Impact:</strong> Entire homes yield significantly higher profitability compared to private or shared rooms, despite lower average occupancy days.</li>
+            <li><strong>Pricing Strategy:</strong> Listings with high review volumes tend to stabilize their pricing, relying on occupancy rates rather than peak pricing for revenue.</li>
+        </ul>
+    </div>
+
+    <!-- Interactive Filter -->
+    <div class="controls">
+        <label for="regionFilter" style="font-weight: bold; margin-right: 15px; font-size: 1.1em;">Filter Market Data by Region:</label>
+        <select id="regionFilter" onchange="updateDashboard()">
+            <option value="all">All Singapore Regions</option>
+            <option value="central">Central Region</option>
+            <option value="west">West Region</option>
+            <option value="east">East Region</option>
+        </select>
+    </div>
+
+    <!-- Dynamic Metrics -->
+    <div class="metrics-container">
+        <div class="metric-box">
+            <h3>Active Listings</h3>
+            <div class="metric-value" id="listingsCount">7,907</div>
+        </div>
+        <div class="metric-box">
+            <h3>Avg Nightly Rate</h3>
+            <div class="metric-value" id="avgPrice">$169.33</div>
+        </div>
+        <div class="metric-box">
+            <h3>Model RMSE</h3>
+            <div class="metric-value" id="modelError">$221.35</div>
+        </div>
+        <div class="metric-box">
+            <h3>Avg Reviews</h3>
+            <div class="metric-value" id="avgReviews">42.5</div>
+        </div>
+        <div class="metric-box">
+            <h3>Est. Occupancy</h3>
+            <div class="metric-value" id="occRate">68%</div>
+        </div>
+    </div>
+
+    <!-- Visualizations Grid -->
+    <div class="dashboard-container">
+        <div class="card">
+            <h2>Hyper-Local Market Analysis</h2>
+            <p style="font-size: 0.9em; opacity: 0.8;">Comparing average listing prices across major geographical zones.</p>
+            <img src="image1.png" alt="Average Price by Region">
+        </div>
+
+        <div class="card">
+            <h2>Pricing Correlation Heatmap</h2>
+            <p style="font-size: 0.9em; opacity: 0.8;">Identifying numerical patterns between review volume, availability, and pricing.</p>
+            <img src="image2.png" alt="Correlation Heatmap">
+        </div>
+
+        <div class="card">
+            <h2>Property Type Distribution</h2>
+            <p style="font-size: 0.9em; opacity: 0.8;">Breakdown of Entire Homes vs. Private Rooms in the selected region.</p>
+            <img src="image4.png.png" alt="Property Type Chart">
+        </div>
+
+        <div class="card">
+            <h2>Seasonal Price Fluctuations</h2>
+            <p style="font-size: 0.9em; opacity: 0.8;">How pricing strategies shift during peak tourist seasons.</p>
+            <img src="image3.png.png" alt="Seasonal Trends Chart">
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-section">
+        <h2 style="color: var(--accent-blue); margin-top: 0;">Top Performing Listing Categories</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Room Type</th>
+                    <th>Average Price</th>
+                    <th>Average Availability (Days)</th>
+                    <th>Profitability Index</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Entire home/apt</td>
+                    <td>$215.00</td>
+                    <td>145</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td>Private room</td>
+                    <td>$85.50</td>
+                    <td>210</td>
+                    <td>Medium</td>
+                </tr>
+                <tr>
+                    <td>Shared room</td>
+                    <td>$45.00</td>
+                    <td>280</td>
+                    <td>Low</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Dynamic Pricing Analysis Project | Built by Lakshay Agrawal</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data Update Logic
+        function updateDashboard() {
+            let filter = document.getElementById("regionFilter").value;
+            
+            let listings = document.getElementById("listingsCount");
+            let price = document.getElementById("avgPrice");
+            let reviews = document.getElementById("avgReviews");
+            let occupancy = document.getElementById("occRate");
+
+            if (filter === "central") {
+                listings.innerText = "3,425";
+                price.innerText = "$176.62";
+                reviews.innerText = "45.2";
+                occupancy.innerText = "72%";
+            } else if (filter === "west") {
+                listings.innerText = "540";
+                price.innerText = "$175.97";
+                reviews.innerText = "38.1";
+                occupancy.innerText = "61%";
+            } else if (filter === "east") {
+                listings.innerText = "508";
+                price.innerText = "$142.50";
+                reviews.innerText = "40.8";
+                occupancy.innerText = "65%";
+            } else {
+                listings.innerText = "7,907";
+                price.innerText = "$169.33";
+                reviews.innerText = "42.5";
+                occupancy.innerText = "68%";
+            }
+        }
+
+        // Dark Mode Toggle Logic
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+
+</body>
+</html>
